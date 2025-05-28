@@ -13,18 +13,18 @@
 #include "pq.h"
 
 struct element {
-  void* data;
-  int priority;
+	void* data;
+	int priority;
 };
 
 /*
  * This is the structure that represents a priority queue.  You must define
  * this struct to contain the data needed to implement a priority queue.
- * in addition, you want to define an element struct with both data and priority, 
- * corresponding to the elements of the priority queue. 
+ * in addition, you want to define an element struct with both data and priority,
+ * corresponding to the elements of the priority queue.
  */
-struct pq{
-  struct dynarray* array;
+struct pq {
+	struct dynarray* array;
 };
 
 
@@ -33,11 +33,11 @@ struct pq{
  * return a pointer to it.
  */
 struct pq* pq_create() {
-  
-  struct pq* queue = malloc(sizeof(struct pq));
-  queue->array = dynarray_create();
 
-  return queue;
+	struct pq* queue = malloc(sizeof(struct pq));
+	queue->array = dynarray_create();
+
+	return queue;
 }
 
 
@@ -50,9 +50,9 @@ struct pq* pq_create() {
  *   pq - the priority queue to be destroyed.  May not be NULL.
  */
 void pq_free(struct pq* pq) {
-  assert(pq);
-  dynarray_free(pq->array);
-  free(pq);
+	assert(pq);
+	dynarray_free(pq->array);
+	free(pq);
 }
 
 
@@ -68,8 +68,8 @@ void pq_free(struct pq* pq) {
  *   Should return 1 if pq is empty and 0 otherwise.
  */
 int pq_isempty(struct pq* pq) {
-  assert(pq);
-  return dynarray_length(pq->array) == 0;
+	assert(pq);
+	return dynarray_length(pq->array) == 0;
 }
 
 
@@ -91,14 +91,22 @@ int pq_isempty(struct pq* pq) {
  *     be the FIRST one returned.
  */
 void pq_insert(struct pq* pq, void* data, int priority) {
-  assert(pq);
+	assert(pq);
 
-  for(int i = 0; i < dynarray_length(pq->array); i++) {
-    if (dynarray_get(priority, i) < priority) {
-      dynarray_set(data, i);
-      break;
-    }
-  }
+	struct element* _element = malloc(sizeof(struct element));
+	_element->data = data;
+	_element->priority = priority;
+	
+	for (int i = 0; i < dynarray_length(pq->array); i++) {
+	struct element* current = dynarray_get(pq->array, i);
+	if (current->priority < priority) {
+		dynarray_insert(pq->array, i, _element);
+		return;
+	}
+
+	}
+	dynarray_insert(pq->array, -1, _element);
+
 }
 
 
@@ -115,7 +123,12 @@ void pq_insert(struct pq* pq, void* data, int priority) {
  *   max priority value.
  */
 void* pq_max(struct pq* pq) {
-  return NULL;
+	assert(pq);
+
+	struct element* max = dynarray_get(pq->array, 0);
+
+
+	return max->data;
 }
 
 
@@ -132,7 +145,11 @@ void* pq_max(struct pq* pq) {
  *   with highest priority value.
  */
 int pq_max_priority(struct pq* pq) {
-  return 0;
+	assert(pq);
+
+	struct element* max = dynarray_get(pq->array, 0);
+
+	return max->priority;
 }
 
 
@@ -150,5 +167,10 @@ int pq_max_priority(struct pq* pq) {
  *   highest priority value.
  */
 void* pq_max_dequeue(struct pq* pq) {
-  return NULL;
+	assert(pq);
+	struct element* max = dynarray_get(pq->array, 0);
+	dynarray_remove(pq->array, 0);
+	free(max);
+	
+	return max->data;
 }
