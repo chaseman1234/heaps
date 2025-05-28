@@ -9,7 +9,9 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 
+#include "dynarray.h"
 #include "pq.h"
 
 struct element {
@@ -98,7 +100,7 @@ void pq_insert(struct pq* pq, void* data, int priority) {
 	_element->priority = priority;
 	
 	for (int i = 0; i < dynarray_length(pq->array); i++) {
-	struct element* current = dynarray_get(pq->array, i);
+	struct element* current = (struct element*)dynarray_get(pq->array, i);
 	if (current->priority < priority) {
 		dynarray_insert(pq->array, i, _element);
 		return;
@@ -125,7 +127,7 @@ void pq_insert(struct pq* pq, void* data, int priority) {
 void* pq_max(struct pq* pq) {
 	assert(pq);
 
-	struct element* max = dynarray_get(pq->array, 0);
+	struct element* max = (struct element*)dynarray_get(pq->array, 0);
 
 
 	return max->data;
@@ -147,7 +149,7 @@ void* pq_max(struct pq* pq) {
 int pq_max_priority(struct pq* pq) {
 	assert(pq);
 
-	struct element* max = dynarray_get(pq->array, 0);
+	struct element* max = (struct element*)dynarray_get(pq->array, 0);
 
 	return max->priority;
 }
@@ -168,7 +170,7 @@ int pq_max_priority(struct pq* pq) {
  */
 void* pq_max_dequeue(struct pq* pq) {
 	assert(pq);
-	struct element* max = dynarray_get(pq->array, 0);
+	struct element* max = (struct element*)dynarray_get(pq->array, 0);
 	dynarray_remove(pq->array, 0);
 	free(max);
 	
