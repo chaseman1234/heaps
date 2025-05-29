@@ -171,8 +171,9 @@ int pq_max_priority(struct pq* pq) {
 void* pq_max_dequeue(struct pq* pq) {
 	assert(pq);
 	struct element* max = (struct element*)dynarray_get(pq->array, 0);
+	void* data = max->data;
 	dynarray_remove(pq->array, 0);
 	free(max);
 	
-	return max->data;
+	return data;
 }
